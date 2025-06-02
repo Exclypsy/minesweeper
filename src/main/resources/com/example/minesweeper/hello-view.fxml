@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.minesweeper.HelloController" spacing="10">
+
+  <padding>
+    <Insets top="10" right="10" bottom="10" left="10"/>
+  </padding>
+
+  <HBox spacing="10" alignment="CENTER_LEFT">
+    <Label text="Šírka:"/>
+    <TextField fx:id="widthField" prefWidth="50" text="10"/>
+
+    <Label text="Výška:"/>
+    <TextField fx:id="heightField" prefWidth="50" text="10"/>
+
+    <Label text="Počet mín:"/>
+    <TextField fx:id="minesField" prefWidth="70" text="10"/>
+
+    <Button text="Nová hra" onAction="#startGame"/>
+  </HBox>
+
+  <ScrollPane fitToWidth="true" fitToHeight="true" prefHeight="400" prefWidth="400">
+    <GridPane fx:id="board" hgap="1" vgap="1" style="-fx-background-color: #555;">
+      <!-- Tu budú tlačidlá -->
+    </GridPane>
+  </ScrollPane>
+
+  <Label fx:id="statusLabel" text="Nastav parametre a klikni Nová hra"/>
+
+</VBox>
