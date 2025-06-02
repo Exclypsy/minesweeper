@@ -30,6 +30,6 @@
     </GridPane>
   </ScrollPane>
 
-  <Label fx:id="statusLabel" text="Nastav parametre a klikni Nová hra"/>
+  <Label fx:id="statusLabel" text="Nastav parametre a klikni Nova hra"/>
 
 </VBox>
