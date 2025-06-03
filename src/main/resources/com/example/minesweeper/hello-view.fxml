@@ -21,7 +21,7 @@
     <Label text="Počet mín:"/>
     <TextField fx:id="minesField" prefWidth="70" text="10"/>
 
-    <Button text="Nová hra" onAction="#startGame"/>
+    <Button text="Nová hra/Reset hry" onAction="#startGame"/>
   </HBox>
 
   <HBox spacing="20">
