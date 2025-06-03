@@ -14,10 +14,6 @@ import javafx.util.Duration;
 import java.util.Random;
 // something
 
-abstract class GameCell extends Button {
-    abstract void reveal();
-    abstract void toggleFlag();
-}
 
 public class HelloController {
 
@@ -36,91 +32,27 @@ public class HelloController {
     private GameCell[][] cells;
     private boolean gameOver;
 
-    private class Cell extends GameCell {
-        boolean isMine = false;
-        boolean revealed = false;
-        boolean flagged = false;
-        int neighborMines = 0;
-        int x, y;
 
-        Cell(int x, int y) {
-            this.x = x;
-            this.y = y;
-            setMinSize(30, 30);
-            setMaxSize(30, 30);
-            setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
-
-            setOnMouseClicked(e -> {
-                if (gameOver) return;
-
-                MouseButton button = e.getButton();
-                if (button == MouseButton.PRIMARY) {
-                    if (!flagged) {
-                        moveCount++;
-                        movesLabel.setText("Ťahy: " + moveCount);
-                        System.out.println("Reveal clicked at " + x + "," + y);
-                        reveal();
-                    }
-                } else if (button == MouseButton.SECONDARY) {
-                    System.out.println("Flag toggled at " + x + "," + y);
-                    toggleFlag();
-                }
-            });
-        }
-
-        @Override
-        void reveal() {
-            if (revealed || flagged) return;
-
-            revealed = true;
-            setDisable(true);
-
-            if (isMine) {
-                setText("💣");
-                setStyle("-fx-background-color: red; -fx-font-weight: bold; -fx-font-size: 14;");
-                gameOver(false);
-            } else {
-                if (neighborMines > 0) {
-                    setText(String.valueOf(neighborMines));
-                    setTextFill(getColorForNumber(neighborMines));
-                } else {
-                    setText("");
-                    // Odhal okolie (rekurzívne)
-                    for (int dx = -1; dx <= 1; dx++) {
-                        for (int dy = -1; dy <= 1; dy++) {
-                            int nx = x + dx;
-                            int ny = y + dy;
-                            if (nx >= 0 && ny >= 0 && nx < width && ny < height) {
-                                cells[nx][ny].reveal();
-                            }
-                        }
-                    }
-                }
-                checkWin();
-            }
-        }
-
-        @Override
-        void toggleFlag() {
-            if (revealed) return;
-
-            flagged = !flagged;
-            setText(flagged ? "🚩" : "");
-        }
+    // --- Helper methods for Cell interaction ---
+    public boolean isGameOver() {
+        return gameOver;
     }
 
-    private Color getColorForNumber(int n) {
-        return switch (n) {
-            case 1 -> Color.BLUE;
-            case 2 -> Color.GREEN;
-            case 3 -> Color.RED;
-            case 4 -> Color.DARKBLUE;
-            case 5 -> Color.DARKRED;
-            case 6 -> Color.TURQUOISE;
-            case 7 -> Color.BLACK;
-            case 8 -> Color.GRAY;
-            default -> Color.BLACK;
-        };
+    public void incrementMoveCount() {
+        moveCount++;
+        movesLabel.setText("Ťahy: " + moveCount);
+    }
+
+    public void revealNeighbors(int x, int y) {
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                int nx = x + dx;
+                int ny = y + dy;
+                if (nx >= 0 && ny >= 0 && nx < width && ny < height) {
+                    ((Cell) cells[nx][ny]).reveal();
+                }
+            }
+        }
     }
 
     @FXML
@@ -176,7 +108,7 @@ public class HelloController {
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                Cell cell = new Cell(x, y);
+                Cell cell = new Cell(x, y, this);
                 cells[x][y] = cell;
                 board.add(cell, x, y);
             }
@@ -223,7 +155,7 @@ public class HelloController {
         }
     }
 
-    private void gameOver(boolean won) {
+    public void gameOver(boolean won) {
         if (timer != null) timer.stop();
         gameOver = true;
 
@@ -247,7 +179,7 @@ public class HelloController {
         }
     }
 
-    private void checkWin() {
+    public void checkWin() {
         int revealedCount = 0;
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
