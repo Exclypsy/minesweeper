@@ -7,6 +7,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 
 import java.util.Random;
 // something
@@ -17,6 +20,11 @@ public class HelloController {
     @FXML private TextField minesField;
     @FXML private GridPane board;
     @FXML private Label statusLabel;
+    private long startTime;
+    private int moveCount = 0;
+    private Timeline timer;
+    @FXML private Label timerLabel;
+    @FXML private Label movesLabel;
 
     private int width, height, mineCount;
     private Cell[][] cells;
@@ -42,6 +50,8 @@ public class HelloController {
                 MouseButton button = e.getButton();
                 if (button == MouseButton.PRIMARY) {
                     if (!flagged) {
+                        moveCount++;
+                        movesLabel.setText("Ťahy: " + moveCount);
                         System.out.println("Reveal clicked at " + x + "," + y);
                         reveal();
                     }
@@ -128,6 +138,21 @@ public class HelloController {
         gameOver = false;
         statusLabel.setText("Hra beží...");
 
+        moveCount = 0;
+        startTime = System.currentTimeMillis();
+        timerLabel.setText("Čas: 00:00");
+        movesLabel.setText("Ťahy: 0");
+        if (timer != null) timer.stop();
+        timer = new Timeline(new KeyFrame(Duration.seconds(1), ev -> {
+            long totalSeconds = (System.currentTimeMillis() - startTime) / 1000;
+            long minutes = totalSeconds / 60;
+            long seconds = totalSeconds % 60;
+            String timeStr = String.format("%02d:%02d", minutes, seconds);
+            timerLabel.setText("Čas: " + timeStr);
+        }));
+        timer.setCycleCount(Timeline.INDEFINITE);
+        timer.play();
+
         board.getChildren().clear();
         board.getColumnConstraints().clear();
         board.getRowConstraints().clear();
@@ -189,6 +214,7 @@ public class HelloController {
     }
 
     private void gameOver(boolean won) {
+        if (timer != null) timer.stop();
         gameOver = true;
 
         for (int x = 0; x < width; x++) {

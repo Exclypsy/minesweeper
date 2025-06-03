@@ -24,12 +24,17 @@
     <Button text="Nová hra" onAction="#startGame"/>
   </HBox>
 
+  <HBox spacing="20">
+    <Label fx:id="timerLabel" text="Čas: 0s"/>
+    <Label fx:id="movesLabel" text="Ťahy: 0"/>
+    <Label fx:id="statusLabel" text="Nastav parametre a klikni Nova hra"/>
+  </HBox>
+
   <ScrollPane fitToWidth="true" fitToHeight="true" prefHeight="400" prefWidth="400">
     <GridPane fx:id="board" hgap="1" vgap="1" style="-fx-background-color: #555;">
       <!-- Tu budú tlačidlá -->
     </GridPane>
   </ScrollPane>
 
-  <Label fx:id="statusLabel" text="Nastav parametre a klikni Nova hra"/>
 
 </VBox>
