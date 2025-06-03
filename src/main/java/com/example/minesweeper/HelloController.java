@@ -13,6 +13,12 @@ import javafx.util.Duration;
 
 import java.util.Random;
 // something
+
+abstract class GameCell extends Button {
+    abstract void reveal();
+    abstract void toggleFlag();
+}
+
 public class HelloController {
 
     @FXML private TextField widthField;
@@ -27,10 +33,10 @@ public class HelloController {
     @FXML private Label movesLabel;
 
     private int width, height, mineCount;
-    private Cell[][] cells;
+    private GameCell[][] cells;
     private boolean gameOver;
 
-    private class Cell extends Button {
+    private class Cell extends GameCell {
         boolean isMine = false;
         boolean revealed = false;
         boolean flagged = false;
@@ -62,6 +68,7 @@ public class HelloController {
             });
         }
 
+        @Override
         void reveal() {
             if (revealed || flagged) return;
 
@@ -93,6 +100,7 @@ public class HelloController {
             }
         }
 
+        @Override
         void toggleFlag() {
             if (revealed) return;
 
@@ -157,7 +165,7 @@ public class HelloController {
         board.getColumnConstraints().clear();
         board.getRowConstraints().clear();
 
-        cells = new Cell[width][height];
+        cells = new GameCell[width][height];
 
         for (int i = 0; i < width; i++) {
             board.getColumnConstraints().add(new ColumnConstraints(30));
@@ -184,8 +192,9 @@ public class HelloController {
         while (placed < mineCount) {
             int x = rand.nextInt(width);
             int y = rand.nextInt(height);
-            if (!cells[x][y].isMine) {
-                cells[x][y].isMine = true;
+            Cell cell = (Cell) cells[x][y];
+            if (!cell.isMine) {
+                cell.isMine = true;
                 placed++;
             }
         }
@@ -194,8 +203,9 @@ public class HelloController {
     private void calculateNeighborMines() {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                if (cells[x][y].isMine) {
-                    cells[x][y].neighborMines = -1;
+                Cell cell = (Cell) cells[x][y];
+                if (cell.isMine) {
+                    cell.neighborMines = -1;
                     continue;
                 }
                 int count = 0;
@@ -204,11 +214,11 @@ public class HelloController {
                         int nx = x + dx;
                         int ny = y + dy;
                         if (nx >= 0 && ny >= 0 && nx < width && ny < height) {
-                            if (cells[nx][ny].isMine) count++;
+                            if (((Cell) cells[nx][ny]).isMine) count++;
                         }
                     }
                 }
-                cells[x][y].neighborMines = count;
+                cell.neighborMines = count;
             }
         }
     }
@@ -219,8 +229,8 @@ public class HelloController {
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                Cell c = cells[x][y];
-                if (c.isMine) {
+                GameCell c = cells[x][y];
+                if (c instanceof Cell cell && cell.isMine) {
                     c.setText("💣");
                     c.setDisable(true);
                     c.setStyle("-fx-background-color: red;");
@@ -241,7 +251,7 @@ public class HelloController {
         int revealedCount = 0;
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                if (cells[x][y].revealed) revealedCount++;
+                if (cells[x][y] instanceof Cell cell && cell.revealed) revealedCount++;
             }
         }
         if (revealedCount == width * height - mineCount) {
