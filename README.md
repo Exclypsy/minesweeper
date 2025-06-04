@@ -19,18 +19,23 @@ A classic **Minesweeper game** implemented in **JavaFX**, supporting customizabl
 
 ## 📂 Project Structure
 
+<pre>
 src/
-├── com/example/minesweeper/
-│   ├── HelloApplication.java     # JavaFX entry point
-│   ├── HelloController.java      # Handles GUI components and user events
-│   ├── GameLogic.java            # Core game logic (mines, victory, defeat, etc.)
-│   ├── GameCell.java             # Abstract class for board cells
-│   ├── Cell.java                 # Implementation of a game cell (button)
+├── main/
+│   ├── java/
+│   │   └── com/example/minesweeper/
+│   │       ├── HelloApplication.java      # JavaFX entry point
+│   │       ├── HelloController.java       # Handles GUI components and user events
+│   │       ├── GameLogic.java             # Core game logic (mines, victory, defeat, etc.)
+│   │       ├── GameCell.java              # Abstract class for board cells
+│   │       └── Cell.java                  # Implementation of a game cell (button)
+│
 ├── resources/
-│   ├── hello-view.fxml           # GUI layout file
-│   ├── assets/
-│   │   ├── bomb.png              # Image shown for mines
-│   │   └── flag.png              # Image shown for flags
+│   ├── hello-view.fxml                    # GUI layout file (FXML)
+│   └── assets/
+│       ├── bomb.png                       # Image shown for mines
+│       └── flag.png                       # Image shown for flags
+</pre>
 
 ---
 
