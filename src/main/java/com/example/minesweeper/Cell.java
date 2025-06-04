@@ -2,6 +2,8 @@ package com.example.minesweeper;
 
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class Cell extends GameCell {
     public boolean isMine = false;
@@ -44,7 +46,6 @@ public class Cell extends GameCell {
 
         if (isMine) {
             setText("💣");
-            setStyle("-fx-background-color: red; -fx-font-weight: bold; -fx-font-size: 14;");
             controller.gameOver(false);
         } else {
             if (neighborMines > 0) {
@@ -63,7 +64,16 @@ public class Cell extends GameCell {
         if (revealed) return;
 
         flagged = !flagged;
-        setText(flagged ? "🚩" : "");
+
+        if (flagged) {
+            Image flagImage = new Image(getClass().getResourceAsStream("/com/example/minesweeper/assets/flag.png"));
+            ImageView view = new ImageView(flagImage);
+            view.setFitWidth(20);
+            view.setFitHeight(20);
+            setGraphic(view);
+        } else {
+            setGraphic(null);
+        }
     }
 
     private Color getColorForNumber(int n) {

@@ -10,6 +10,8 @@ import javafx.scene.paint.Color;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.util.Random;
 // something
@@ -163,9 +165,18 @@ public class HelloController {
             for (int y = 0; y < height; y++) {
                 GameCell c = cells[x][y];
                 if (c instanceof Cell cell && cell.isMine) {
-                    c.setText("💣");
+                    // Pokus o načítanie obrázku bomby
+                    var bombUrl = getClass().getResource("/com/example/minesweeper/assets/bomb.png");
+                    if (bombUrl != null) {
+                        Image bombImage = new Image(bombUrl.toString());
+                        ImageView bombView = new ImageView(bombImage);
+                        bombView.setFitWidth(20);
+                        bombView.setFitHeight(20);
+                        c.setGraphic(bombView);
+                    } else {
+                        c.setText("💣"); // fallback ak obrázok chýba
+                    }
                     c.setDisable(true);
-                    c.setStyle("-fx-background-color: red;");
                 } else {
                     c.setDisable(true);
                 }
