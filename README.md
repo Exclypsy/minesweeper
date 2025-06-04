@@ -118,6 +118,6 @@ Or open the project in your IDE and run HelloApplication.
 
 📄 License
 
-This project is open-source and free to use. Add a LICENSE file if needed.
+This project is open-source and free to use.
 
 ⸻
