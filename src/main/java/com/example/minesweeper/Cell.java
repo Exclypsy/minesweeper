@@ -11,24 +11,24 @@ public class Cell extends GameCell {
     public boolean flagged = false;
     public int neighborMines = 0;
     public int x, y;
-    private final HelloController controller;
+    private final GameLogic logic;
 
-    public Cell(int x, int y, HelloController controller) {
+    public Cell(int x, int y, GameLogic logic) {
         this.x = x;
         this.y = y;
-        this.controller = controller;
+        this.logic = logic;
 
         setMinSize(30, 30);
         setMaxSize(30, 30);
         setStyle("-fx-font-weight: bold; -fx-font-size: 14;");
 
         setOnMouseClicked(e -> {
-            if (controller.isGameOver()) return;
+            if (logic.isGameOver()) return;
 
             MouseButton button = e.getButton();
             if (button == MouseButton.PRIMARY) {
                 if (!flagged) {
-                    controller.incrementMoveCount();
+                    logic.incrementMoveCount();
                     reveal();
                 }
             } else if (button == MouseButton.SECONDARY) {
@@ -46,16 +46,16 @@ public class Cell extends GameCell {
 
         if (isMine) {
             setText("💣");
-            controller.gameOver(false);
+            logic.gameOver(false);
         } else {
             if (neighborMines > 0) {
                 setText(String.valueOf(neighborMines));
                 setTextFill(getColorForNumber(neighborMines));
             } else {
                 setText("");
-                controller.revealNeighbors(x, y);
+                logic.revealNeighbors(x, y);
             }
-            controller.checkWin();
+            logic.checkWin();
         }
     }
 
@@ -66,13 +66,19 @@ public class Cell extends GameCell {
         flagged = !flagged;
 
         if (flagged) {
-            Image flagImage = new Image(getClass().getResourceAsStream("/com/example/minesweeper/assets/flag.png"));
-            ImageView view = new ImageView(flagImage);
-            view.setFitWidth(20);
-            view.setFitHeight(20);
-            setGraphic(view);
+            var url = getClass().getResource("/com/example/minesweeper/assets/flag.png");
+            if (url != null) {
+                Image flagImage = new Image(url.toString());
+                ImageView view = new ImageView(flagImage);
+                view.setFitWidth(20);
+                view.setFitHeight(20);
+                setGraphic(view);
+            } else {
+                setText("🚩");
+            }
         } else {
             setGraphic(null);
+            setText("");
         }
     }
 
